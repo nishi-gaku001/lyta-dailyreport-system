@@ -129,14 +129,14 @@ public class EmployeeService {
         employeeUpdate.setRole(employee.getRole());
 
         // パスワードチェック
-        // パスワード欄が空白ではないときにチェック
-        if (form.password.value != "") {
+        // パスワード欄が空白ではないときにパスワードチェック
+        if (employee.getPassword() != "") {
+//            System.out.println("あ");
             ErrorKinds result = employeePasswordCheck(employee);
             if (ErrorKinds.CHECK_OK != result) {
+//                System.out.println("い");
                 return result;
             }
-
-            employeeUpdate.setPassword(employee.getPassword());
         }
 
         LocalDateTime now = LocalDateTime.now();

@@ -124,49 +124,38 @@ public class EmployeeController {
     @GetMapping(value = "/{code}/update")
     public String edit(@PathVariable("code") String code, Model model) {
 
-        model.addAttribute("employee", employeeService.findByCode(code));
+        if(code != null) {
+         // System.out.println("え");
+            model.addAttribute("employee", employeeService.findByCode(code));
+        }
+     // System.out.println("お");
         return "employees/update";
+
     }
 
  // 従業員更新画面の更新処理
     @PostMapping(value = "/{code}/update")
     public String update(@Validated Employee employee, BindingResult res, Model model) {
-
-        // パスワード空白チェック
-        // パスワードが空白ではない場合
-//        if (!("".equals(employee.getPassword()))) {
-//            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.RANGECHECK_ERROR),
-//                    ErrorMessage.getErrorValue(ErrorKinds.RANGECHECK_ERROR));
-//
-//            return "employees/update";
-//
-//        }
+         System.out.println("あ");
 
         // 入力チェック
         if (res.hasErrors()) {
-            return "employees/update";
+          System.out.println("い");
+            return edit(null,model);
         }
+      System.out.println("う");
 
         // ユーザー情報を更新
-        // 論理削除を行った従業員番号を指定すると例外となるためtry~catchで対応
-        // (findByIdでは削除フラグがTRUEのデータが取得出来ないため)
-        try {
-            // 更新のコードは↓のこれ
-            ErrorKinds result = employeeService.update(employee);
+        ErrorKinds result = employeeService.update(employee);
 
-            if (ErrorMessage.contains(result)) {
-                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-                return "employees/update";
-            }
-
-        } catch (DataIntegrityViolationException e) {
-            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
-                    ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
-            return "employees/update";
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return edit(null,model);
         }
 
         // 一覧画面にリダイレクト
-        return "redirect:employees";
+        System.out.println("か");
+        return "redirect:/employees";
 
     }
 
