@@ -113,4 +113,62 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+    // これ以降、初期状態から追加
+    // 従業員更新画面を表示_初期状態（固定の更新画面表示用）
+//    @GetMapping(value = "/update")
+//    public String edit() {
+//        return "employees/update";
+//    }
+
+    // 従業員更新画面を表示（本番用）
+    @GetMapping(value = "/{code}/update")
+    public String edit(@PathVariable("code") String code, Model model) {
+
+        model.addAttribute("employee", employeeService.findByCode(code));
+        return "employees/update";
+    }
+
+ // 従業員更新画面の更新処理
+    @PostMapping(value = "/{code}/update")
+    public String update(@Validated Employee employee, BindingResult res, Model model) {
+
+        // パスワード空白チェック
+        // パスワードが空白ではない場合
+//        if (!("".equals(employee.getPassword()))) {
+//            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.RANGECHECK_ERROR),
+//                    ErrorMessage.getErrorValue(ErrorKinds.RANGECHECK_ERROR));
+//
+//            return "employees/update";
+//
+//        }
+
+        // 入力チェック
+        if (res.hasErrors()) {
+            return "employees/update";
+        }
+
+        // ユーザー情報を更新
+        // 論理削除を行った従業員番号を指定すると例外となるためtry~catchで対応
+        // (findByIdでは削除フラグがTRUEのデータが取得出来ないため)
+        try {
+            // 更新のコードは↓のこれ
+            ErrorKinds result = employeeService.update(employee);
+
+            if (ErrorMessage.contains(result)) {
+                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+                return "employees/update";
+            }
+
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
+                    ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
+            return "employees/update";
+        }
+
+        // 一覧画面にリダイレクト
+        return "redirect:employees";
+
+    }
+
+
 }

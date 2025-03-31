@@ -117,4 +117,32 @@ public class EmployeeService {
         return passwordLength < 8 || 16 < passwordLength;
     }
 
+    // これ以降、初期状態から追加
+    // 従業員更新
+    @Transactional
+    public ErrorKinds update(Employee employee) {
+
+        Employee employeeUpdate = findByCode(employee.getCode());
+
+        employeeUpdate.setName(employee.getName());
+
+        employeeUpdate.setRole(employee.getRole());
+
+        // パスワードチェック
+        // パスワード欄が空白ではないときにチェック
+        if (form.password.value != "") {
+            ErrorKinds result = employeePasswordCheck(employee);
+            if (ErrorKinds.CHECK_OK != result) {
+                return result;
+            }
+
+            employeeUpdate.setPassword(employee.getPassword());
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        employeeUpdate.setUpdatedAt(now);
+
+        employeeRepository.save(employeeUpdate);
+        return ErrorKinds.SUCCESS;
+    }
 }
