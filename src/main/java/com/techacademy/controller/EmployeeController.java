@@ -136,14 +136,14 @@ public class EmployeeController {
  // 従業員更新画面の更新処理
     @PostMapping(value = "/{code}/update")
     public String update(@Validated Employee employee, BindingResult res, Model model) {
-         System.out.println("あ");
+//         System.out.println("あ");
 
         // 入力チェック
         if (res.hasErrors()) {
-          System.out.println("い");
+//          System.out.println("い");
             return edit(null,model);
         }
-      System.out.println("う");
+//      System.out.println("う");
 
         // ユーザー情報を更新
         ErrorKinds result = employeeService.update(employee);
@@ -154,7 +154,7 @@ public class EmployeeController {
         }
 
         // 一覧画面にリダイレクト
-        System.out.println("か");
+//        System.out.println("か");
         return "redirect:/employees";
 
     }
