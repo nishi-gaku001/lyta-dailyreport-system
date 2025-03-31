@@ -135,8 +135,11 @@ public class EmployeeService {
             ErrorKinds result = employeePasswordCheck(employee);
             if (ErrorKinds.CHECK_OK != result) {
 //                System.out.println("い");
+
                 return result;
             }
+            // ここで更新（メンタリングで確認済み）
+            employeeUpdate.setPassword(passwordEncoder.encode(employee.getPassword()));
         }
 
         LocalDateTime now = LocalDateTime.now();

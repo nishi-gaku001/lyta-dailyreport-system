@@ -122,26 +122,30 @@ public class EmployeeController {
 
     // 従業員更新画面を表示（本番用）
     @GetMapping(value = "/{code}/update")
-    public String edit(@PathVariable("code") String code, Model model) {
+    // 最後にEmployeeを付ける、editに渡すのをメンタリングで確認済み
+    public String edit(@PathVariable("code") String code, Model model,@ModelAttribute Employee employee) {
+         System.out.println("え");
 
         if(code != null) {
-         // System.out.println("え");
             model.addAttribute("employee", employeeService.findByCode(code));
+        } else {
+            System.out.println(employee.getCode());
+            model.addAttribute("employee", employee);
         }
-     // System.out.println("お");
+
         return "employees/update";
 
     }
 
  // 従業員更新画面の更新処理
     @PostMapping(value = "/{code}/update")
-    public String update(@Validated Employee employee, BindingResult res, Model model) {
+    public String update(@ModelAttribute @Validated Employee employee, BindingResult res, Model model) {
 //         System.out.println("あ");
 
         // 入力チェック
         if (res.hasErrors()) {
 //          System.out.println("い");
-            return edit(null,model);
+            return edit(null,model,employee);
         }
 //      System.out.println("う");
 
@@ -150,14 +154,11 @@ public class EmployeeController {
 
         if (ErrorMessage.contains(result)) {
             model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-            return edit(null,model);
+            return edit(null,model,employee);
         }
 
         // 一覧画面にリダイレクト
 //        System.out.println("か");
         return "redirect:/employees";
-
     }
-
-
 }

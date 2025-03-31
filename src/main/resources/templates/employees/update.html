@@ -22,13 +22,16 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
-                            <form name ="form" th:action="@{/employees/{code}/update(code=${code})}" th:object="${employee}" th:method="post">
+                        <!-- "@{/employees/{code}/update(code=${employee.code})}" のemployee.codeにするとエラーが出た後の更新処理が通った-->
+                            <form name ="form" th:action="@{/employees/{code}/update(code=${employee.code})}" th:object="${employee}" th:method="post">
                                 <div class="wizard wizard-success mb-4">
                                     <div class="mb-3">
                                         <label class="form-label" for="code">社員番号</label>
                                         <p class="mb-1"></p>
                                         <div class="col-md-7">
-                                            <input type="hidden" id="code" name="code" th:value="${code}" th:text="${code}">
+                                            <input type="hidden" id="code" name="code" th:value="*{code}">
+                                            <!-- <span type="hidden" id="code" name="code" th:value="${code}" th:text="${code}"> -->
+                                            <span th:text="${code}">
                                         </div>
                                     </div>
 
