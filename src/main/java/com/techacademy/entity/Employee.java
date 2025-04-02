@@ -72,6 +72,7 @@ public class Employee {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    // Reportとのリレーション用
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<Report> reportList;
 
