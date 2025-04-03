@@ -1,7 +1,6 @@
 package com.techacademy.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,25 +20,24 @@ public class ReportService {
 //        this.passwordEncoder = passwordEncoder;
     }
 
-    // 日報一覧表示処理
+    // 日報一覧表示処理（管理者権限の場合）
     public List<Report> findAll() {
             return reportRepository.findAll();
         }
 
-    // 1件を検索
-    public Report findByCode(String employee_code) {
-        // findByIdで検索
-        Optional<Report> option = reportRepository.findById(employee_code);
-        // 取得できなかった場合はnullを返す
-        Report report = option.orElse(null);
-        return report;
+    // 日報一覧表示処理（一般権限の場合）
+    public List<Report> findByEmployee(Employee employee) {
+        // 検索
+        return reportRepository.findByEmployee(employee);
     }
 
-    // ログイン中のユーザー情報を検索
-    public Report findByEmployee(Employee employee) {
-        // 検索
-        List<Report> option = reportRepository.findByEmployee(employee);
-        Report report = list.orElse(null);
-        return report;
-    }
+//    // 1件を検索
+//    public Report findByCode(String employee_code) {
+//        // findByIdで検索
+//        Optional<Report> option = reportRepository.findById(employee_code);
+//        // 取得できなかった場合はnullを返す
+//        Report report = option.orElse(null);
+//        return report;
+//    }
+
 }
