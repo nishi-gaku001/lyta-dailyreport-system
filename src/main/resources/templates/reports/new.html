@@ -22,11 +22,13 @@
                             <!-- <p>ここは日報の新規登録画面</p> -->
                             <form th:action="@{/reports/add}" th:object="${report}" th:method="post">
                                 <div class="wizard wizard-success mb-4">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="reportDate">日付</label>
-                                        <p class="mb-1"></p>
+                                    <!--<div class="mb-3">
+                                        <!-- 社員番号をreportテーブルに渡せるように隠して持っておく必要がある？
+                                        <input type="hidden" name="employee_code" th:value="${employee_code}"></input>
+                                    </div>-->
+                                        <label class="form-label" for="report_date">日付</label>
                                         <div class="col-md-7">
-                                            <input class="form-control" type="date" th:field="*{reportDate}" th:errorclass="err" id="reportDate">
+                                            <input class="form-control" type="date" th:field="*{reportDate}" th:errorclass="err" id="report_date" name="report_date"></input>
                                             <span th:errors="*{reportDate}" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -34,14 +36,14 @@
                                         <label class="form-label" for="name">氏名</label>
                                         <p class="mb-1"></p>
                                         <div class="col-md-7">
-                                            <span th:text="${name}">
+                                            <span th:text="${name}"></span>
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="title">タイトル</label>
                                         <p class="mb-1"></p>
                                         <div class="col-md-7">
-                                            <input class="form-control" type="text" th:field="*{title}" th:errorclass="err" id="title">
+                                            <input class="form-control" type="text" th:field="*{title}" th:errorclass="err" id="title" name="title"></input>
                                             <span th:errors="*{title}" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -49,7 +51,7 @@
                                         <label class="form-label" for="content">内容</label>
                                         <p class="mb-1"></p>
                                         <div class="col-md-7">
-                                            <textarea class="form-control" type="" th:field="*{content}" th:errorclass="err" id="content"></textarea>
+                                            <textarea class="form-control" type="" th:field="*{content}" th:errorclass="err" id="content" name="content"></textarea>
                                             <span th:errors="*{content}" class="text-danger"></span>
                                         </div>
                                     </div>

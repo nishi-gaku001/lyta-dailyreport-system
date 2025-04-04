@@ -75,6 +75,4 @@ public class Employee {
     // Reportとのリレーション用
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<Report> reportList;
-
-
 }
