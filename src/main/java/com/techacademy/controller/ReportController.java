@@ -51,35 +51,39 @@ public class ReportController {
 
     // 日報新規登録画面を表示
     @GetMapping(value = "/add")
-    public String create(@AuthenticationPrincipal UserDetail userDetail,Model model, @ModelAttribute Report report) {
-            // ここでユーザーの情報を取得して渡す？
+    public String create(@AuthenticationPrincipal UserDetail userDetail,@ModelAttribute Report report, Model model) {
+            // ログイン中のユーザーの社員名を取得し、渡す
             // 社員名
             model.addAttribute("name", userDetail.getEmployee().getName());
-            // 社員番号
-//            model.addAttribute("employee_code", userDetail.getEmployee().getCode());
 
         return "reports/new";
     }
 
-    // 従業員新規登録処理
+    // 日報新規登録処理
     @PostMapping(value = "/add")
-    public String add(@AuthenticationPrincipal UserDetail userDetail,@Validated Report report, BindingResult res, Model model) {
+    public String add(@AuthenticationPrincipal UserDetail userDetail, @ModelAttribute @Validated Report report, BindingResult res, Model model) {
         // System.out.println(model);
 
 //        // 入力チェック
-//        if (res.hasErrors()) {
-//            return create(null, model, report);
-//        }
+        if (res.hasErrors()) {
+            return create(userDetail,report,model);
+        }
 
         // 日報を保存
-//        ErrorKinds result = reportService.save(report);
-        reportService.save(userDetail,report);
+            ErrorKinds result = reportService.save(userDetail,report);
 
-//        if (ErrorMessage.contains(result)) {
-//            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-//            return create(null, model, report);
-//        }
+            if (ErrorMessage.contains(result)) {
+                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+                return create(userDetail,report,model);
+            }
 
         return "redirect:/reports";
+    }
+
+    // 日報詳細画面を表示
+    @GetMapping("detail")
+    public String detail() {
+
+        return "reports/detail";
     }
 }

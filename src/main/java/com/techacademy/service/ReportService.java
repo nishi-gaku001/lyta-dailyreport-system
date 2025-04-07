@@ -1,5 +1,6 @@
 package com.techacademy.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,26 +45,37 @@ public class ReportService {
 //      return report;
 //  }
 
+//  // 1件を検索
+  public Report findByEmployeeAndReportDate(Employee employee,LocalDate reportDate) {
+      // findByIdで検索
+      Report report = reportRepository.findByEmployeeAndReportDate(employee,reportDate);
+      // 取得できなかった場合はnullを返す
+      return report;
+  }
+
     // 日報保存
     @Transactional
     public ErrorKinds save(@AuthenticationPrincipal UserDetail userDetail,Report report) {
 
-        // ログイン中の従業員かつ入力した日付のデータが既にあるかどうか（後で作る）
-//        if (findByCode(employee.getCode()) != null) {
-//            return ErrorKinds.DUPLICATE_ERROR;
-//        }
-        System.out.println(report.getReportDate());
-        System.out.println(report.getTitle());
-        System.out.println(report.getContent());
+        // ログイン中の従業員かつ入力した日付のデータが既にあるかどうか
+        if (findByEmployeeAndReportDate(userDetail.getEmployee(),report.getReportDate()) != null){
+            return ErrorKinds.DATECHECK_ERROR;
+        }
+
+//        System.out.println(report.getReportDate());
+//        System.out.println(report.getTitle());
+//        System.out.println(report.getContent());
 //        System.out.println(report.getEmployee().getCode());
 
         // ログイン中のユーザーの社員番号を取る
-        System.out.println(userDetail.getEmployee().getCode());
+//        System.out.println(userDetail.getEmployee().getCode());
+        report.setEmployee(userDetail.getEmployee());
+
         report.setDeleteFlg(false);
 
         LocalDateTime now = LocalDateTime.now();
         // System.out.println(now);
-        report.setUpdatedAt(now);
+        report.setCreatedAt(now);
         report.setUpdatedAt(now);
 
         reportRepository.save(report);
