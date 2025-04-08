@@ -3,6 +3,7 @@ package com.techacademy.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,16 +37,7 @@ public class ReportService {
         return reportRepository.findByEmployee(employee);
     }
 
-//  // 1件を検索
-//  public Report findByCode(String employee_code) {
-//      // findByIdで検索
-//      Optional<Report> option = reportRepository.findById(employee_code);
-//      // 取得できなかった場合はnullを返す
-//      Report report = option.orElse(null);
-//      return report;
-//  }
-
-//  // 1件を検索
+  // 1件を検索_日報の日付
   public Report findByEmployeeAndReportDate(Employee employee,LocalDate reportDate) {
       // findByIdで検索
       Report report = reportRepository.findByEmployeeAndReportDate(employee,reportDate);
@@ -53,7 +45,7 @@ public class ReportService {
       return report;
   }
 
-    // 日報保存
+    // 日報を保存
     @Transactional
     public ErrorKinds save(@AuthenticationPrincipal UserDetail userDetail,Report report) {
 
@@ -80,6 +72,15 @@ public class ReportService {
 
         reportRepository.save(report);
         return ErrorKinds.SUCCESS;
+    }
+
+    // 1件を検索_日報詳細
+    public Report findById(String id) {
+        // findByIdで検索
+        Optional<Report> option = reportRepository.findById(id);
+        // 取得できなかった場合はnullを返す
+        Report report = option.orElse(null);
+        return report;
     }
 
 }

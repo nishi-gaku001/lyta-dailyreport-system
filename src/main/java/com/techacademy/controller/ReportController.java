@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -80,10 +81,18 @@ public class ReportController {
         return "redirect:/reports";
     }
 
-    // 日報詳細画面を表示
-    @GetMapping("detail")
-    public String detail() {
+    // 日報詳細画面を表示（最初に固定画面の表示実験用）
+//    @GetMapping("detail")
+//    public String detail() {
+//
+//        return "reports/detail";
+//    }
 
+    // 日報詳細画面
+    @GetMapping(value = "/{id}/")
+    public String detail(@PathVariable("id") String id, Model model) {
+
+        model.addAttribute("report", reportService.findById(id));
         return "reports/detail";
     }
 }
