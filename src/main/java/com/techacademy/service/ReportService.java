@@ -83,4 +83,50 @@ public class ReportService {
         return report;
     }
 
+    // 日報削除
+    @Transactional
+    public ErrorKinds delete(String id) {
+
+        System.out.println(id);
+
+        Report report = findById(id);
+        LocalDateTime now = LocalDateTime.now();
+        report.setUpdatedAt(now);
+        report.setDeleteFlg(true);
+
+        return ErrorKinds.SUCCESS;
+    }
+
+    // 従業員更新
+    @Transactional
+    public ErrorKinds update(@AuthenticationPrincipal UserDetail userDetail,Report report) {
+
+        // ログイン中の従業員かつ入力した日付のデータが既にあるかどうか
+        if (findByEmployeeAndReportDate(userDetail.getEmployee(),report.getReportDate()) != null){
+            return ErrorKinds.DATECHECK_ERROR;
+        }
+
+        Report reportUpdate = findById(String.valueOf(report.getId()));
+
+        reportUpdate.setReportDate(report.getReportDate());
+
+        reportUpdate.setTitle(report.getTitle());
+
+        reportUpdate.setContent(report.getContent());
+
+        LocalDateTime now = LocalDateTime.now();
+        reportUpdate.setUpdatedAt(now);
+
+        reportRepository.save(reportUpdate);
+        return ErrorKinds.SUCCESS;
+    }
+
+    // 1件を検索_その日報の登録日
+    public Report findByEmployeeAndCreatedAt(Employee employee,LocalDate CreatedAt) {
+        // findByIdで検索
+        Report report = reportRepository.findByEmployeeAndReportDate(employee,CreatedAt);
+        // 取得できなかった場合はnullを返す
+        return report;
+    }
+
 }

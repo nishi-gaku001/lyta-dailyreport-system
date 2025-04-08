@@ -88,11 +88,60 @@ public class ReportController {
 //        return "reports/detail";
 //    }
 
-    // 日報詳細画面
+    // 日報詳細画面を表示
     @GetMapping(value = "/{id}/")
-    public String detail(@PathVariable("id") String id, Model model) {
+    public String detail(@AuthenticationPrincipal UserDetail userDetail,@PathVariable("id") String id, Model model) {
 
+        // 氏名以外の情報
         model.addAttribute("report", reportService.findById(id));
+
+        // 氏名
+        model.addAttribute("name", userDetail.getEmployee().getName());
+
         return "reports/detail";
+    }
+
+    // 日報削除処理
+    @PostMapping(value = "/{id}/delete")
+    public String delete(@PathVariable("id") String id) {
+
+        reportService.delete(id);
+
+        return "redirect:/reports";
+    }
+
+    // 日報更新画面を表示
+    @GetMapping(value = "/{id}/update")
+    public String edit(@AuthenticationPrincipal UserDetail userDetail,@PathVariable("id") String id,@ModelAttribute Report report,Model model) {
+
+         if(id != null) {
+             model.addAttribute("report", reportService.findById(id));
+             model.addAttribute("name", userDetail.getEmployee().getName());
+         } else {
+             model.addAttribute("report", report);
+         }
+
+        return "reports/update";
+    }
+
+    // 日報更新画面の更新処理
+    @PostMapping(value = "/{id}/update")
+    public String update(@AuthenticationPrincipal UserDetail userDetail,@PathVariable("id") String id,@ModelAttribute @Validated Report report, BindingResult res, Model model) {
+
+        // 入力チェック
+        if (res.hasErrors()) {
+            return edit(userDetail,null,report,model);
+        }
+
+        // ユーザー情報を更新
+        ErrorKinds result = reportService.update(userDetail,report);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return edit(userDetail,null,report,model);
+        }
+
+        // 一覧画面にリダイレクト
+        return "redirect:/reports";
     }
 }
