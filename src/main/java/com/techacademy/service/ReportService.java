@@ -37,7 +37,7 @@ public class ReportService {
         return reportRepository.findByEmployee(employee);
     }
 
-  // 1件を検索_日報の日付
+  // 1件を検索_ログイン中の従業員＆日報の日付
   public Report findByEmployeeAndReportDate(Employee employee,LocalDate reportDate) {
       // findByIdで検索
       Report report = reportRepository.findByEmployeeAndReportDate(employee,reportDate);
@@ -101,9 +101,19 @@ public class ReportService {
     @Transactional
     public ErrorKinds update(@AuthenticationPrincipal UserDetail userDetail,Report report) {
 
-        // ログイン中の従業員かつ入力した日付のデータが既にあるかどうか
-        if (findByEmployeeAndReportDate(userDetail.getEmployee(),report.getReportDate()) != null){
-            return ErrorKinds.DATECHECK_ERROR;
+        LocalDate db_date = findById(String.valueOf(report.getId())).getReportDate();
+
+//         System.out.println(db_date);
+//         System.out.println(report.getReportDate());
+
+        // 最初にDB上の日付と入力した日付が同じかどうかチェック(==だと上手く比較できなかった）
+        if(report.getReportDate().equals(db_date)) {
+
+        }else {
+         // 違っていたら、ログイン中の従業員かつ入力した日付のデータが既にあるかどうかチェック
+            if (findByEmployeeAndReportDate(userDetail.getEmployee(),report.getReportDate()) != null){
+                return ErrorKinds.DATECHECK_ERROR;
+            }
         }
 
         // データ型変換すればOKか？ idはintだけど、getIdはStringなので
@@ -122,12 +132,11 @@ public class ReportService {
         return ErrorKinds.SUCCESS;
     }
 
-    // 1件を検索_その日報の登録日
-    public Report findByEmployeeAndCreatedAt(Employee employee,LocalDate CreatedAt) {
+    // 1件を検索_ログイン中の従業員＆日報の日付
+    public Report findByReportDate(LocalDate reportDate) {
         // findByIdで検索
-        Report report = reportRepository.findByEmployeeAndReportDate(employee,CreatedAt);
+        Report report = reportRepository.findByReportDate(reportDate);
         // 取得できなかった場合はnullを返す
         return report;
     }
-
 }
