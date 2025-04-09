@@ -106,6 +106,7 @@ public class ReportService {
             return ErrorKinds.DATECHECK_ERROR;
         }
 
+        // データ型変換すればOKか？ idはintだけど、getIdはStringなので
         Report reportUpdate = findById(String.valueOf(report.getId()));
 
         reportUpdate.setReportDate(report.getReportDate());
